@@ -1,6 +1,12 @@
 #ifndef _XLCD_SETTINGS
 #define _XLCD_SETTINGS
 
+#if defined(NO_SD)
+#define XTOUCH_FS SPIFFS
+#else
+#define XTOUCH_FS SD
+#endif
+
 void xtouch_settings_save(bool onlyRoot = false)
 {
     DynamicJsonDocument doc(256);
@@ -11,7 +17,7 @@ void xtouch_settings_save(bool onlyRoot = false)
     doc["wop"] = xTouchConfig.xTouchWakeOnPrint;
     doc["chamberTempDiff"] = xTouchConfig.xTouchChamberSensorReadingDiff;
 
-    xtouch_filesystem_writeJson(SD, xtouch_paths_settings, doc);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_settings, doc);
 
     if (onlyRoot)
     {
@@ -25,12 +31,12 @@ void xtouch_settings_save(bool onlyRoot = false)
 
     DynamicJsonDocument printers = cloud.loadPrinters();
     printers[xTouchConfig.xTouchSerialNumber]["settings"] = printersSettings;
-    xtouch_filesystem_writeJson(SD, xtouch_paths_printers, printers);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_printers, printers);
 }
 
 void xtouch_settings_loadSettings()
 {
-    if (!xtouch_filesystem_exist(SD, xtouch_paths_settings))
+    if (!xtouch_filesystem_exist(XTOUCH_FS, xtouch_paths_settings))
     {
         DynamicJsonDocument doc(256);
         xTouchConfig.xTouchBacklightLevel = 128;
@@ -42,7 +48,7 @@ void xtouch_settings_loadSettings()
         xtouch_settings_save(true);
     }
 
-    DynamicJsonDocument settings = xtouch_filesystem_readJson(SD, xtouch_paths_settings);
+    DynamicJsonDocument settings = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_settings);
 
     xTouchConfig.xTouchBacklightLevel = settings.containsKey("backlight") ? settings["backlight"].as<int>() : 128;
     xTouchConfig.xTouchTFTOFFValue = settings.containsKey("tftOff") ? settings["tftOff"].as<int>() : 15;

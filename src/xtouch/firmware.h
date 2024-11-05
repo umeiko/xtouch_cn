@@ -3,9 +3,18 @@
 
 #include <Arduino.h>
 #include <Update.h>
-#include <SD.h>
+#if not defined(NO_SD)
+#include "SD.h"
+#else
+#include "SPIFFS.h"
+#endif
 #include <stdio.h>
 // #include <semver.h>
+#if defined(NO_SD)
+#define XTOUCH_FS SPIFFS
+#else
+#define XTOUCH_FS SD
+#endif
 
 struct SemVer
 {
@@ -95,7 +104,7 @@ void xtouch_firmware_checkOnlineFirmwareUpdate(void)
     if (hasOTAConfigFile)
     {
 
-        DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_firmware_ota_json);
+        DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_firmware_ota_json);
         if (xtouch_firmware_semverNeedsUpdate(doc["version"]))
         {
 
@@ -155,8 +164,8 @@ void xtouch_firmware_checkOnlineFirmwareUpdate(void)
                     // disable OTA to be able to boot
                     xTouchConfig.xTouchOTAEnabled = false;
                     xtouch_settings_save();
-                    xtouch_filesystem_deleteFile(SD, xtouch_paths_firmware_ota_fw);
-                    xtouch_filesystem_deleteFile(SD, xtouch_paths_firmware_ota_json);
+                    xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_firmware_ota_fw);
+                    xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_firmware_ota_json);
                     ESP.restart();
                 }
                 else
@@ -167,7 +176,7 @@ void xtouch_firmware_checkOnlineFirmwareUpdate(void)
         }
         else
         {
-            xtouch_filesystem_deleteFile(SD, xtouch_paths_firmware_ota_json);
+            xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_firmware_ota_json);
         }
     }
     else
@@ -182,10 +191,10 @@ void xtouch_firmware_checkOnlineFirmwareUpdate(void)
 void xtouch_firmware_checkFirmwareUpdate(void)
 {
 
-    if (xtouch_filesystem_exist(SD, xtouch_paths_firmware_ota_fw))
+    if (xtouch_filesystem_exist(XTOUCH_FS, xtouch_paths_firmware_ota_fw))
     {
-        DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_firmware_ota_json);
-        File firmware = xtouch_filesystem_open(SD, xtouch_paths_firmware_ota_fw);
+        DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_firmware_ota_json);
+        File firmware = xtouch_filesystem_open(XTOUCH_FS, xtouch_paths_firmware_ota_fw);
         Update.onProgress(xtouch_firmware_onProgress);
         Update.begin(firmware.size(), U_FLASH);
         if (doc.containsKey("md5"))
@@ -213,8 +222,8 @@ void xtouch_firmware_checkFirmwareUpdate(void)
             lv_task_handler();
         }
 
-        xtouch_filesystem_deleteFile(SD, xtouch_paths_firmware_ota_json);
-        xtouch_filesystem_deleteFile(SD, xtouch_paths_firmware_ota_fw);
+        xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_firmware_ota_json);
+        xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_firmware_ota_fw);
 
         delay(2000);
         ESP.restart();

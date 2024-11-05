@@ -10,6 +10,11 @@
 #include "bbl-certs.h"
 
 bool xtouch_cloud_pair_loop_exit = false;
+#if defined(NO_SD)
+#define XTOUCH_FS SPIFFS
+#else
+#define XTOUCH_FS SD
+#endif
 
 class BambuCloud
 {
@@ -192,17 +197,17 @@ public:
   bool login(String verificationCode = "")
   {
 
-    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Login BBL Cloud");
+    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 登录到拓竹服务器");
     lv_timer_handler();
     lv_task_handler();
     delay(32);
 
-    DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(SD, xtouch_paths_config);
+    DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_config);
 
     if (!wifiConfig.containsKey("cloud-region") || !wifiConfig.containsKey("cloud-email") || !wifiConfig.containsKey("cloud-password"))
     {
 
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Invalid Bambu Cloud credentials");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 无效的Bambu Cloud凭据");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -215,7 +220,7 @@ public:
     _email = _decodeString(wifiConfig["cloud-email"].as<String>());
     _password = _decodeString(wifiConfig["cloud-password"].as<String>());
 
-    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Processing JWT Token");
+    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 正在获取 JWT Token");
     lv_timer_handler();
     lv_task_handler();
     delay(32);
@@ -231,7 +236,7 @@ public:
 
     if (_auth_token == "verifyCode")
     {
-      String gotoCode = "Go to http://" + WiFi.localIP().toString();
+      String gotoCode = "请打开局域网网址: http://" + WiFi.localIP().toString();
       lv_label_set_text(introScreenCaption, gotoCode.c_str());
       lv_timer_handler();
       lv_task_handler();
@@ -241,7 +246,7 @@ public:
 
     if (_auth_token == "")
     {
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Invalid BBL Cloud credentials");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 无效的Bambu Cloud凭据");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -253,7 +258,7 @@ public:
     if (_auth_token == "" || _username == "")
     {
 
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Fatal BBL JWT parsing error");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Bambu Cloud凭据解析失败");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -301,7 +306,7 @@ public:
 
   JsonArray getPrivateFilaments()
   {
-    return xtouch_filesystem_readJson(SD, xtouch_paths_private_filaments_flat, true).as<JsonArray>();
+    return xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_private_filaments_flat, true).as<JsonArray>();
   }
 
   void updatePrivateFilaments()
@@ -419,8 +424,8 @@ public:
 
             uniqueDoc.shrinkToFit();
 
-            // xtouch_filesystem_writeJson(SD, xtouch_paths_private_filaments, uniqueDoc);
-            xtouch_filesystem_writeJson(SD, xtouch_paths_private_filaments_flat, flat);
+            // xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_private_filaments, uniqueDoc);
+            xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_private_filaments_flat, flat);
           }
         }
         client->stop();
@@ -455,7 +460,7 @@ public:
   void selectPrinter()
   {
     JsonArray devices = getDeviceList();
-    DynamicJsonDocument printers = xtouch_filesystem_readJson(SD, xtouch_paths_printers, false);
+    DynamicJsonDocument printers = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_printers, false);
 
     for (JsonVariant v : devices)
     {
@@ -466,13 +471,13 @@ public:
     }
 
     serializeJsonPretty(printers, Serial);
-    xtouch_filesystem_writeJson(SD, xtouch_paths_printers, printers);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_printers, printers);
 
     if (devices.size() == 0)
     {
       Serial.println("No devices found in Bambu Cloud");
 
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " No Cloud Registered Devices");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 该账户旗下无打印机");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -535,28 +540,28 @@ public:
   void savePrinterPair(String usn, String modelName, String printerName)
   {
 
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_pair, false);
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_pair, false);
 
     doc["paired"] = usn.c_str();
     doc["model"] = modelName.c_str();
     doc["printerName"] = printerName.c_str();
 
-    xtouch_filesystem_writeJson(SD, xtouch_paths_pair, doc);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_pair, doc);
   }
 
   bool isPaired()
   {
-    if (!xtouch_filesystem_exist(SD, xtouch_paths_pair))
+    if (!xtouch_filesystem_exist(XTOUCH_FS, xtouch_paths_pair))
     {
       return false;
     }
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_pair, false);
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_pair, false);
     return doc["paired"].as<String>() != "";
   }
 
   void loadPair()
   {
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_pair, false);
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_pair, false);
     setCurrentDevice(doc["paired"].as<String>());
     setCurrentModel(doc["model"].as<String>());
     setPrinterName(doc["printerName"].as<String>());
@@ -579,30 +584,30 @@ public:
 
   DynamicJsonDocument loadPrinters()
   {
-    return xtouch_filesystem_readJson(SD, xtouch_paths_printers, false);
+    return xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_printers, false);
   }
 
   void clearDeviceList()
   {
     DynamicJsonDocument pairDoc(32);
-    xtouch_filesystem_writeJson(SD, xtouch_paths_printers, pairDoc);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_printers, pairDoc);
   }
 
   void clearPairList()
   {
-    xtouch_filesystem_deleteFile(SD, xtouch_paths_pair);
+    xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_pair);
   }
   void clearTokens()
   {
-    xtouch_filesystem_deleteFile(SD, xtouch_paths_tokens);
+    xtouch_filesystem_deleteFile(XTOUCH_FS, xtouch_paths_tokens);
   }
 
   void unpair()
   {
     ConsoleInfo.println("[XTOUCH][SSDP] Unpairing device");
-    DynamicJsonDocument pairFile = xtouch_filesystem_readJson(SD, xtouch_paths_pair, false);
+    DynamicJsonDocument pairFile = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_pair, false);
     pairFile["paired"] = "";
-    xtouch_filesystem_writeJson(SD, xtouch_paths_pair, pairFile);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_pair, pairFile);
     ESP.restart();
   }
 
@@ -610,14 +615,14 @@ public:
   {
     DynamicJsonDocument doc(2048);
     doc["authToken"] = _auth_token;
-    xtouch_filesystem_writeJson(SD, xtouch_paths_tokens, doc, false, 2048);
+    xtouch_filesystem_writeJson(XTOUCH_FS, xtouch_paths_tokens, doc, false, 2048);
     ESP.restart();
   }
 
   void loadAuthTokens()
   {
     ConsoleLog.println(ESP.getFreeHeap());
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_tokens, false, 2048);
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_tokens, false, 2048);
     _auth_token = doc["authToken"].as<String>();
     _username = _getUserFromAuthToken();
     loggedIn = true;
@@ -625,11 +630,11 @@ public:
 
   bool hasAuthTokens()
   {
-    if (!xtouch_filesystem_exist(SD, xtouch_paths_tokens))
+    if (!xtouch_filesystem_exist(XTOUCH_FS, xtouch_paths_tokens))
     {
       return false;
     }
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(SD, xtouch_paths_tokens, false, 2048);
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_tokens, false, 2048);
     return doc["authToken"].as<String>() != "";
   }
 };

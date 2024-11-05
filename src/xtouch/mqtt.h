@@ -776,11 +776,11 @@ void xtouch_mqtt_connect()
                     {
                         if (!xtouch_mqtt_firstConnectionDone)
                         {
-                            lv_label_set_text(introScreenCaption, LV_SYMBOL_WARNING " MQTT ERROR");
+                            lv_label_set_text(introScreenCaption, LV_SYMBOL_WARNING " MQTT 错误");
                             lv_timer_handler();
                             lv_task_handler();
                             delay(3000);
-                            lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " REBOOTING");
+                            lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " 重启中");
                             lv_timer_handler();
                             lv_task_handler();
                         }
@@ -799,11 +799,11 @@ void xtouch_mqtt_connect()
             case 5: // MQTT UNAUTHORIZED
                 if (!xtouch_mqtt_firstConnectionDone)
                 {
-                    lv_label_set_text(introScreenCaption, LV_SYMBOL_WARNING " MQTT ERROR");
+                    lv_label_set_text(introScreenCaption, LV_SYMBOL_WARNING " MQTT 错误");
                     lv_timer_handler();
                     lv_task_handler();
                     delay(3000);
-                    lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " REBOOTING");
+                    lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " 重启中");
                     lv_timer_handler();
                     lv_task_handler();
                 }
@@ -823,7 +823,7 @@ void xtouch_mqtt_connect()
 
 void xtouch_mqtt_setup()
 {
-    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " Connecting BBL Cloud");
+    lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 连接到拓竹服务器");
     lv_timer_handler();
     lv_task_handler();
     delay(32);

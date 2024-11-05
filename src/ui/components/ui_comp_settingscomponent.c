@@ -152,9 +152,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settingsTitle = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_settingsTitle, lv_pct(100));
     lv_obj_set_height(cui_settingsTitle, LV_SIZE_CONTENT); /// 40
-    lv_label_set_text_fmt(cui_settingsTitle, LV_SYMBOL_SETTINGS " SETTINGS");
+    lv_label_set_text_fmt(cui_settingsTitle, LV_SYMBOL_SETTINGS " 设置");
     lv_obj_set_scrollbar_mode(cui_settingsTitle, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_text_font(cui_settingsTitle, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_settingsTitle, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_settingsTitle, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_settingsTitle, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_settingsTitle, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -169,9 +169,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_screenTitle = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_screenTitle, lv_pct(100));
     lv_obj_set_height(cui_screenTitle, LV_SIZE_CONTENT); /// 40
-    lv_label_set_text(cui_screenTitle, LV_SYMBOL_IMAGE " LCD");
+    lv_label_set_text(cui_screenTitle, LV_SYMBOL_IMAGE " 显示设置");
     lv_obj_set_scrollbar_mode(cui_screenTitle, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_text_font(cui_screenTitle, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_screenTitle, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_screenTitle, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_screenTitle, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_screenTitle, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -201,8 +201,8 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settingsBackLightPanelLabel = lv_label_create(cui_settingsBackLightPanel);
     lv_obj_set_width(cui_settingsBackLightPanelLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settingsBackLightPanelLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settingsBackLightPanelLabel, "Back " LV_SYMBOL_CHARGE);
-    lv_obj_set_style_text_font(cui_settingsBackLightPanelLabel, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(cui_settingsBackLightPanelLabel, "亮度 " LV_SYMBOL_CHARGE);
+    lv_obj_set_style_text_font(cui_settingsBackLightPanelLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_settingsBackLightPanelLabel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_settingsBackLightPanelLabel, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_settingsBackLightPanelLabel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -244,8 +244,8 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settingsTFTOFFPanelLabel = lv_label_create(cui_settingsTFTOFFPanel);
     lv_obj_set_width(cui_settingsTFTOFFPanelLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settingsTFTOFFPanelLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settingsTFTOFFPanelLabel, "Sleep");
-    lv_obj_set_style_text_font(cui_settingsTFTOFFPanelLabel, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(cui_settingsTFTOFFPanelLabel, "休眠");
+    lv_obj_set_style_text_font(cui_settingsTFTOFFPanelLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_settingsTFTOFFPanelLabel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_settingsTFTOFFPanelLabel, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_settingsTFTOFFPanelLabel, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -273,7 +273,7 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
 
     int32_t value = lv_slider_get_value(ui_settingsTFTOFFSlider);
     lv_label_set_text_fmt(ui_settingsTFTOFFValue, value < XTOUCH_LCD_MIN_SLEEP_TIME ? LV_SYMBOL_POWER : "%dm", value);
-    lv_obj_set_style_text_font(ui_settingsTFTOFFValue, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_settingsTFTOFFValue, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui_settingsTFTOFFValue, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui_settingsTFTOFFValue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui_settingsTFTOFFValue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -298,7 +298,8 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_screenWOPLabel = lv_label_create(cui_screenWOPSetting);
     lv_obj_set_width(cui_screenWOPLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_screenWOPLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_screenWOPLabel, LV_SYMBOL_EYE_OPEN " Wake on Print");
+    lv_label_set_text(cui_screenWOPLabel, LV_SYMBOL_EYE_OPEN " 打印时唤醒");
+    lv_obj_set_style_text_font(cui_screenWOPLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_scrollbar_mode(cui_screenWOPLabel, LV_SCROLLBAR_MODE_OFF);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
@@ -338,8 +339,10 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_screenInvertLabel = lv_label_create(cui_screenInvertSetting);
     lv_obj_set_width(cui_screenInvertLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_screenInvertLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_screenInvertLabel, LV_SYMBOL_IMAGE " Invert Colors");
+    lv_label_set_text(cui_screenInvertLabel, LV_SYMBOL_IMAGE " 反转色彩");
+    lv_obj_set_style_text_font(cui_screenInvertLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_scrollbar_mode(cui_screenInvertLabel, LV_SCROLLBAR_MODE_OFF);
+    
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settingsTFTInvertSwitch = lv_switch_create(cui_screenInvertSetting);
@@ -377,8 +380,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settingsTFTFlipLabel = lv_label_create(cui_settingsTFTFlip);
     lv_obj_set_width(cui_settingsTFTFlipLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settingsTFTFlipLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settingsTFTFlipLabel, LV_SYMBOL_SHUFFLE " Flip Screen");
+    lv_label_set_text(cui_settingsTFTFlipLabel, LV_SYMBOL_SHUFFLE " 显示翻转");
     lv_obj_set_scrollbar_mode(cui_settingsTFTFlipLabel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(cui_settingsTFTFlipLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settingsTFTFlipSwitch = lv_switch_create(cui_settingsTFTFlip);
@@ -401,9 +405,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_pairingTitle = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_pairingTitle, lv_pct(100));
     lv_obj_set_height(cui_pairingTitle, LV_SIZE_CONTENT); /// 40
-    lv_label_set_text(cui_pairingTitle, LV_SYMBOL_LIST " CONNECTED PRINTERS");
+    lv_label_set_text(cui_pairingTitle, LV_SYMBOL_LIST " 已连接的打印机");
     lv_obj_set_scrollbar_mode(cui_pairingTitle, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_text_font(cui_pairingTitle, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_pairingTitle, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_pairingTitle, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_pairingTitle, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_pairingTitle, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -429,15 +433,16 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     lv_obj_set_style_pad_bottom(cui_unpairButton, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(cui_unpairButton, lv_color_hex(0x000), LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_label_set_text_fmt(cui_unpairButton, LV_SYMBOL_SHUFFLE " Unlink [ %s ]", xTouchConfig.xTouchPrinterName);
+    lv_label_set_text_fmt(cui_unpairButton, LV_SYMBOL_SHUFFLE " 断开 [ %s ]", xTouchConfig.xTouchPrinterName);
+    lv_obj_set_style_text_font(cui_unpairButton, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *cui_deviceTitle;
     cui_deviceTitle = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_deviceTitle, lv_pct(100));
     lv_obj_set_height(cui_deviceTitle, LV_SIZE_CONTENT); /// 40
-    lv_label_set_text_fmt(cui_deviceTitle, LV_SYMBOL_LIST " XTOUCH v%s", XTOUCH_FIRMWARE_VERSION);
+    lv_label_set_text_fmt(cui_deviceTitle, LV_SYMBOL_LIST " Umeko汉化 v%s", XTOUCH_FIRMWARE_VERSION);
     lv_obj_set_scrollbar_mode(cui_deviceTitle, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_text_font(cui_deviceTitle, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_deviceTitle, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(cui_deviceTitle, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(cui_deviceTitle, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_deviceTitle, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -467,8 +472,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settings_auxFanLabel = lv_label_create(cui_settings_auxFan);
     lv_obj_set_width(cui_settings_auxFanLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settings_auxFanLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settings_auxFanLabel, "AUX FAN");
+    lv_label_set_text(cui_settings_auxFanLabel, "辅助风扇");
     lv_obj_set_scrollbar_mode(cui_settings_auxFanLabel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(cui_settings_auxFanLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settings_auxFanSwitch = lv_switch_create(cui_settings_auxFan);
@@ -514,8 +520,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settings_chamberFanLabel = lv_label_create(cui_settings_chamberFan);
     lv_obj_set_width(cui_settings_chamberFanLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settings_chamberFanLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settings_chamberFanLabel, "CHAMBER FAN");
+    lv_label_set_text(cui_settings_chamberFanLabel, "机箱风扇");
     lv_obj_set_scrollbar_mode(cui_settings_chamberFanLabel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(cui_settings_chamberFanLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settings_chamberFanSwitch = lv_switch_create(cui_settings_chamberFan);
@@ -561,8 +568,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settings_chamberSensorLabel = lv_label_create(cui_settings_chamberSensor);
     lv_obj_set_width(cui_settings_chamberSensorLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settings_chamberSensorLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settings_chamberSensorLabel, "CHAMBER TEMP");
+    lv_label_set_text(cui_settings_chamberSensorLabel, "仓温");
     lv_obj_set_scrollbar_mode(cui_settings_chamberSensorLabel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(cui_settings_chamberSensorLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settings_chamberSensorSwitch = lv_switch_create(cui_settings_chamberSensor);
@@ -608,8 +616,9 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_settings_otaLabel = lv_label_create(cui_settings_ota);
     lv_obj_set_width(cui_settings_otaLabel, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_settings_otaLabel, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_settings_otaLabel, "OTA Update");
+    lv_label_set_text(cui_settings_otaLabel, "OTA 更新");
     lv_obj_set_scrollbar_mode(cui_settings_otaLabel, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(cui_settings_otaLabel, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // lv_obj_t *ui_settingsTFTInvertSwitch;
     ui_settings_otaSwitch = lv_switch_create(cui_settings_ota);
@@ -633,7 +642,7 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_reseDeviceButton = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_reseDeviceButton, lv_pct(100));
     lv_obj_set_height(cui_reseDeviceButton, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_reseDeviceButton, LV_SYMBOL_POWER " Reboot Device");
+    lv_label_set_text(cui_reseDeviceButton, LV_SYMBOL_POWER " 重启打印机");
     lv_obj_add_flag(cui_reseDeviceButton, LV_OBJ_FLAG_CLICKABLE);    /// Flags
     lv_obj_clear_flag(cui_reseDeviceButton, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_obj_set_scrollbar_mode(cui_reseDeviceButton, LV_SCROLLBAR_MODE_OFF);
@@ -645,6 +654,7 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     lv_obj_set_style_pad_top(cui_reseDeviceButton, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(cui_reseDeviceButton, 16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(cui_reseDeviceButton, lv_color_hex(0x000), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_reseDeviceButton, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t **children = lv_mem_alloc(sizeof(lv_obj_t *) * _UI_COMP_SETTINGSCOMPONENT_NUM);
     children[UI_COMP_SETTINGSCOMPONENT_SETTINGSCOMPONENT] = cui_settingsComponent;

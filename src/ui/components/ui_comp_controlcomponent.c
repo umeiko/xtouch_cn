@@ -40,7 +40,7 @@ void ui_event_comp_controlComponent_controlScreenHome(lv_event_t *e)
     lv_obj_t **comp_controlComponent = lv_event_get_user_data(e);
     if (event_code == LV_EVENT_CLICKED)
     {
-        ui_confirmPanel_show(LV_SYMBOL_WARNING " Start Homing Process?", ui_event_comp_controlComponent_controlScreenHomeConfirm);
+        ui_confirmPanel_show(LV_SYMBOL_WARNING " 开始归零?", ui_event_comp_controlComponent_controlScreenHomeConfirm);
     }
 }
 void ui_event_comp_controlComponent_controlScreenDown(lv_event_t *e)

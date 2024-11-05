@@ -66,12 +66,12 @@ void ui_accessCodeScreen_screen_init(void)
     lv_obj_set_height(ui_accessCodeInput, LV_SIZE_CONTENT); /// 48
     lv_obj_set_x(ui_accessCodeInput, 0);
     lv_obj_set_y(ui_accessCodeInput, 0);
-    lv_textarea_set_placeholder_text(ui_accessCodeInput, "Enter Access Code");
+    lv_textarea_set_placeholder_text(ui_accessCodeInput, "输入认证码");
     lv_textarea_set_one_line(ui_accessCodeInput, true);
     lv_obj_add_flag(ui_accessCodeInput, LV_OBJ_FLAG_FLOATING);                                 /// Flags
     lv_obj_clear_flag(ui_accessCodeInput, LV_OBJ_FLAG_GESTURE_BUBBLE | LV_OBJ_FLAG_SNAPPABLE); /// Flags
     lv_obj_set_style_text_align(ui_accessCodeInput, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_accessCodeInput, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_accessCodeInput, &ui_font_chinese_14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui_accessCodeInput, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_accessCodeInput, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_accessCodeInput, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -79,7 +79,7 @@ void ui_accessCodeScreen_screen_init(void)
 
     lv_obj_set_style_text_letter_space(ui_accessCodeInput, 0, LV_PART_TEXTAREA_PLACEHOLDER | LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui_accessCodeInput, 0, LV_PART_TEXTAREA_PLACEHOLDER | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_accessCodeInput, &lv_font_montserrat_28, LV_PART_TEXTAREA_PLACEHOLDER | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_accessCodeInput, &ui_font_chinese_14, LV_PART_TEXTAREA_PLACEHOLDER | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui_accessCodeInput, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_textarea_set_max_length(ui_accessCodeInput, 8);
     lv_keyboard_set_textarea(ui_accessCodeScreenKeyboard, ui_accessCodeInput);

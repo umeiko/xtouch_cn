@@ -130,11 +130,11 @@ void xtouch_webserver_begin()
 
                 const char *html = R"rawliteral(
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bambu Lab Verification Code</title>
+    <title>Bambu Lab 验证码</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -183,18 +183,18 @@ void xtouch_webserver_begin()
 </head>
 <body>
     <div class="container">
-        <h1>Enter Bambu Lab Verification Code</h1>
-        <h3>Check your email for the code</h3>
+        <h1>输入 Bambu Lab 验证码</h1>
+        <h3>检查您的电子邮件以获取验证码</h3>
         <form id="verificationForm">
-            <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter your code" minlength="6" maxlength="6" required>
-            <button type="submit">Submit</button>
+            <input type="text" id="verificationCode" name="verificationCode" placeholder="输入您的验证码" minlength="6" maxlength="6" required>
+            <button type="submit">提交</button>
             <div id="message" class="message"></div>
         </form>
     </div>
 
     <script>
         document.getElementById('verificationForm').addEventListener('submit', async function(event) {
-            event.preventDefault(); // Prevent form from submitting traditionally
+            event.preventDefault(); // 阻止表单传统提交
 
             const code = document.getElementById('verificationCode').value;
             const messageElement = document.getElementById('message');
@@ -207,14 +207,14 @@ void xtouch_webserver_begin()
                 });
 
                 if (response.ok) {
-                    messageElement.textContent = 'Verification code submitted successfully!';
+                    messageElement.textContent = '验证码提交成功！';
                     messageElement.style.color = 'green';
                 } else {
-                    messageElement.textContent = 'Failed to submit the code. Please try again.';
+                    messageElement.textContent = '提交验证码失败。请再试一次。';
                     messageElement.style.color = 'red';
                 }
             } catch (error) {
-                messageElement.textContent = 'An error occurred. Please try again later.';
+                messageElement.textContent = '发生了错误。请稍后再试。';
                 messageElement.style.color = 'red';
             }
         });

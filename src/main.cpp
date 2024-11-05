@@ -1,3 +1,5 @@
+#define NO_SD
+
 #include <driver/i2s.h>
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -52,14 +54,14 @@ void setup()
 
   xtouch_settings_loadSettings();
 
-  xtouch_firmware_checkFirmwareUpdate();
+  // xtouch_firmware_checkFirmwareUpdate();
 
   xtouch_touch_setup();
 
   while (!xtouch_wifi_setup())
     ;
 
-  xtouch_firmware_checkOnlineFirmwareUpdate();
+  // xtouch_firmware_checkOnlineFirmwareUpdate();
 
   xtouch_screen_setupScreenTimer();
   xtouch_setupGlobalEvents();

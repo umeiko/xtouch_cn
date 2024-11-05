@@ -7,6 +7,12 @@
 #include <MD5Builder.h>
 #include "bbl-certs.h"
 
+#if defined(NO_SD)
+#define XTOUCH_FS SPIFFS
+#else
+#define XTOUCH_FS SD
+#endif
+
 int downloadFileToSDCard(const char *url, const char *fileName, void (*onProgress)(int) = NULL, void (*onMD5Check)(int) = NULL, const char *otaMD5 = NULL)
 {
 
@@ -29,7 +35,7 @@ int downloadFileToSDCard(const char *url, const char *fileName, void (*onProgres
 
     if (httpCode == HTTP_CODE_OK)
     {
-        File file = SD.open(fileName, FILE_WRITE);
+        File file = XTOUCH_FS.open(fileName, FILE_WRITE);
         if (file)
         {
             Stream *response = &http.getStream();
@@ -67,7 +73,7 @@ int downloadFileToSDCard(const char *url, const char *fileName, void (*onProgres
         {
             onMD5Check(-1);
 
-            File fileMD5 = SD.open(fileName, FILE_READ);
+            File fileMD5 = XTOUCH_FS.open(fileName, FILE_READ);
             md5Checker.begin();
             md5Checker.addStream(fileMD5, fileMD5.size());
             md5Checker.calculate();

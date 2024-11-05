@@ -2,7 +2,11 @@
 #define _XLCD_CONNECTION
 
 #include "mbedtls/base64.h"
-
+#if defined(NO_SD)
+#define XTOUCH_FS SPIFFS
+#else
+#define XTOUCH_FS SD
+#endif
 String xtouch_wifi_setup_decodeString(String inputString)
 {
     const unsigned char *input = (const unsigned char *)inputString.c_str();
@@ -27,7 +31,7 @@ String xtouch_wifi_setup_decodeString(String inputString)
 
 bool xtouch_wifi_setup()
 {
-    DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(SD, xtouch_paths_config);
+    DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_config);
     if (wifiConfig.isNull() || !wifiConfig.containsKey("ssid") || !wifiConfig.containsKey("pwd"))
     {
         lv_label_set_text(introScreenCaption, wifiConfig.isNull() ? LV_SYMBOL_SD_CARD " Missing config.json" : LV_SYMBOL_WARNING " Inaccurate config.json");
@@ -46,7 +50,7 @@ bool xtouch_wifi_setup()
     WiFi.begin(ssidB64String.c_str(), ssidPWDString.c_str());
     ConsoleInfo.println(F("[XTOUCH][CONNECTION] Connecting to WiFi .."));
 
-    lv_label_set_text(introScreenCaption, LV_SYMBOL_WIFI " Connecting");
+    lv_label_set_text(introScreenCaption, LV_SYMBOL_WIFI " 连接中...");
     lv_obj_set_style_text_color(introScreenCaption, lv_color_hex(0x555555), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_timer_handler();
     lv_task_handler();
@@ -63,12 +67,12 @@ bool xtouch_wifi_setup()
         switch (status)
         {
         case WL_IDLE_STATUS:
-            statusText = LV_SYMBOL_WIFI " Connecting";
+            statusText = LV_SYMBOL_WIFI " 连接中...";
             statusColor = lv_color_hex(0x555555);
             break;
 
         case WL_NO_SSID_AVAIL:
-            statusText = LV_SYMBOL_WARNING " Bad SSID Check WiFi credentials";
+            statusText = LV_SYMBOL_WARNING " WIFI名错误";
             statusColor = lv_color_hex(0xff0000);
             reboot = true;
             break;
@@ -78,7 +82,7 @@ bool xtouch_wifi_setup()
 
         case WL_CONNECT_FAILED:
         case WL_DISCONNECTED:
-            statusText = LV_SYMBOL_WARNING " Check your WiFi credentials";
+            statusText = LV_SYMBOL_WARNING " WIFI密码错误";
             statusColor = lv_color_hex(0xff0000);
             reboot = true;
             break;
@@ -100,7 +104,7 @@ bool xtouch_wifi_setup()
         if (reboot)
         {
             delay(3000);
-            lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " REBOOTING");
+            lv_label_set_text(introScreenCaption, LV_SYMBOL_REFRESH " 重启中");
             lv_timer_handler();
             lv_task_handler();
             ESP.restart();
@@ -111,7 +115,7 @@ bool xtouch_wifi_setup()
     WiFi.setTxPower(WIFI_POWER_19_5dBm); // https://github.com/G6EJD/ESP32-8266-Adjust-WiFi-RF-Power-Output/blob/main/README.md
 
     delay(1000);
-    lv_label_set_text(introScreenCaption, LV_SYMBOL_WIFI " Connected");
+    lv_label_set_text(introScreenCaption, LV_SYMBOL_WIFI " 已连接");
     lv_timer_handler();
     lv_task_handler();
     delay(1000);

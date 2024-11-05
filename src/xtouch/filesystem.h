@@ -2,7 +2,9 @@
 #define _XLCD_SD
 
 #include "FS.h"
+#if not defined(NO_SD)
 #include "SD.h"
+#endif
 #include <ArduinoJson.h>
 #include <Arduino.h>
 
@@ -21,6 +23,7 @@ bool xtouch_filesystem_deleteFile(fs::FS &fs, const char *path)
     return fs.remove(path);
 }
 
+#if not defined(NO_SD)
 bool xtouch_filesystem_mkdir(fs::FS &fs, const char *path)
 {
     if (!xtouch_filesystem_exist(SD, path))
@@ -29,11 +32,22 @@ bool xtouch_filesystem_mkdir(fs::FS &fs, const char *path)
     }
     return true;
 }
-
 bool xtouch_filesystem_rmdir(fs::FS &fs, const char *path)
 {
     return fs.rmdir(path);
 }
+#else
+bool xtouch_filesystem_mkdir(fs::FS &fs, const char *path)
+{
+    ConsoleError.printf("spiffs不支持生成目录\"%s\"", path);
+    return true;
+}
+bool xtouch_filesystem_rmdir(fs::FS &fs, const char *path)
+{
+    ConsoleError.printf("spiffs不支持移除目录操作\"%s\"", path);
+    return true;
+}
+#endif
 
 void xtouch_filesystem_writeJson(fs::FS &fs, const char *filename, DynamicJsonDocument json, bool defaultsToArray = false, int size = 1024)
 {
