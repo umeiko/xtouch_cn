@@ -236,8 +236,11 @@ public:
 
     if (_auth_token == "verifyCode")
     {
-      String gotoCode = "请打开局域网网址: http://" + WiFi.localIP().toString();
+      String page = "http://" + WiFi.localIP().toString();
+      String gotoCode = "请连接到wifi\"" + WiFi.SSID() +"\"后扫码进入配置网页\n或直接访问局域网网址: http://" + WiFi.localIP().toString();
       lv_label_set_text(introScreenCaption, gotoCode.c_str());
+      // const char * data = "https://gitee.com/meiziyang2023/xtouchumeko-version-tutorial";
+      lv_qrcode_update(introScreenQr, page.c_str(), strlen(page.c_str()));
       lv_timer_handler();
       lv_task_handler();
 

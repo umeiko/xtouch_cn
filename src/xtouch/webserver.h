@@ -183,8 +183,8 @@ void xtouch_webserver_begin()
 </head>
 <body>
     <div class="container">
-        <h1>输入 Bambu Lab 验证码</h1>
-        <h3>检查您的电子邮件以获取验证码</h3>
+        <h1>输入 Bambu Lab 短信验证码</h1>
+        <h3>检查您的手机短信以获取验证码</h3>
         <form id="verificationForm">
             <input type="text" id="verificationCode" name="verificationCode" placeholder="输入您的验证码" minlength="6" maxlength="6" required>
             <button type="submit">提交</button>

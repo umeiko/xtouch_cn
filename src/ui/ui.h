@@ -43,6 +43,7 @@ extern "C"
 
   lv_obj_t *introScreen;
   lv_obj_t *introScreenIcon;
+  lv_obj_t *introScreenQr;
   lv_obj_t *introScreenCaption;
 
   lv_obj_t *ui_sidebarComponent;

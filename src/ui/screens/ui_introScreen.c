@@ -42,17 +42,17 @@ void ui_introScreen_screen_init()
 
     lv_color_t bg_color = lv_palette_lighten(LV_PALETTE_LIGHT_BLUE, 5);
     lv_color_t fg_color = lv_palette_darken(LV_PALETTE_BLUE, 4);
-    lv_obj_t * qr = lv_qrcode_create(introScreen, 100, fg_color, bg_color);
+    introScreenQr = lv_qrcode_create(introScreen, 100, fg_color, bg_color);
     // lv_qrcode_set_size(qr, 150);
     // lv_qrcode_set_dark_color(qr, fg_color);
     // lv_qrcode_set_light_color(qr, bg_color);
     /*Set data*/
     const char * data = "https://gitee.com/meiziyang2023/xtouchumeko-version-tutorial";
-    lv_qrcode_update(qr, data, strlen(data));
-    lv_obj_center(qr);
+    lv_qrcode_update(introScreenQr, data, strlen(data));
+    lv_obj_center(introScreenQr);
     /*Add a border with bg_color*/
-    lv_obj_set_style_border_color(qr, bg_color, 0);
-    lv_obj_set_style_border_width(qr, 5, 0);
+    lv_obj_set_style_border_color(introScreenQr, bg_color, 0);
+    lv_obj_set_style_border_width(introScreenQr, 5, 0);
 
     introScreenCaption = lv_label_create(introScreen);
     lv_obj_set_width(introScreenCaption, LV_SIZE_CONTENT);  /// 100
