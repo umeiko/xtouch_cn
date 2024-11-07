@@ -8,7 +8,7 @@
 #define SD_MOSI 23
 #define SD_CS 5
 
-#define LCD_BACK_LIGHT_PIN 21
+#define LCD_BACK_LIGHT_PIN 27
 
 // use first channel of 16 channels (started from zero)
 #define LEDC_CHANNEL_0 0
@@ -174,11 +174,11 @@ void xtouch_screen_setup()
 {
 
     ConsoleInfo.println("[XTouch][SCREEN] Setup");
-    pinMode(XPT2046_CS, OUTPUT);
+    // pinMode(XPT2046_CS, OUTPUT);
     pinMode(TFT_CS, OUTPUT);
     pinMode(SD_CS, OUTPUT);
 
-    digitalWrite(XPT2046_CS, HIGH); // Touch controller chip select (if used)
+    // digitalWrite(XPT2046_CS, HIGH); // Touch controller chip select (if used)
     digitalWrite(TFT_CS, HIGH);     // TFT screen chip select
     digitalWrite(SD_CS, HIGH);      // SD card chips select, must use GPIO 5 (ESP32 SS)
 
@@ -188,11 +188,12 @@ void xtouch_screen_setup()
 
     tft.init();
 
+
     ledcSetup(LEDC_CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_12_BIT);
     ledcAttachPin(LCD_BACK_LIGHT_PIN, LEDC_CHANNEL_0);
 
-    x_touch_spi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-    x_touch_touchScreen.begin(x_touch_spi);
+    // x_touch_spi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
+    x_touch_touchScreen.begin();
 
     xtouch_screen_setupTFTFlip();
 
