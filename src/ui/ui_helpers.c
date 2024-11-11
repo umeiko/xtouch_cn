@@ -250,7 +250,7 @@ void _ui_checked_set_text_value(lv_obj_t *trg, lv_obj_t *src, const char *txt_on
 lv_color_t _ui_get_complementary_color(lv_color_t color)
 {
    lv_color_t compl_color;
-   compl_color.full = (((color.ch.red * 0.299) + (color.ch.green * 0.587) + (color.ch.blue * 0.114)) > 186) ? 0x000000 : 0xFFFFFF;
+   compl_color.full = (((color.ch.red * 0.299) + (color.ch.green_h * 0.587) + (color.ch.blue * 0.114)) > 186) ? 0x000000 : 0xFFFFFF;
    return compl_color;
 }
 
