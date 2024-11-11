@@ -1,23 +1,21 @@
 #ifndef _XLCD_TOUCH
 #define _XLCD_TOUCH
 
-#include <XPT2046_Touchscreen.h>
+#include "CST820.h"
 
-#define XPT2046_IRQ 36
-#define XPT2046_MOSI 32
-#define XPT2046_MISO 39
-#define XPT2046_CLK 25
-#define XPT2046_CS 33
-
-SPIClass x_touch_spi = SPIClass(HSPI);
-XPT2046_Touchscreen x_touch_touchScreen(XPT2046_CS, XPT2046_IRQ);
-XTouchPanelConfig x_touch_touchConfig;
-
+/*定义触摸屏引脚*/
+#define I2C_SDA 21
+#define I2C_SCL 22
 #if defined(NO_SD)
 #define XTOUCH_FS SPIFFS
 #else
 #define XTOUCH_FS SD
 #endif
+// SPIClass x_touch_spi = SPIClass(HSPI);
+CST820 x_touch_touchScreen(I2C_SDA, I2C_SCL, -1, -1); /* 触摸实例 */
+
+// XPT2046_Touchscreen x_touch_touchScreen(XPT2046_CS, XPT2046_IRQ);
+XTouchPanelConfig x_touch_touchConfig;
 
 class ScreenPoint
 {
@@ -101,6 +99,7 @@ bool hasTouchConfig()
 
 void xtouch_touch_setup()
 {
+    #if not defined(SKIP_TP_CAL)
     if (hasTouchConfig())
     {
         ConsoleInfo.println(F("[XTouch][TOUCH] Load from disk"));
@@ -109,8 +108,12 @@ void xtouch_touch_setup()
     else
     {
         ConsoleInfo.println(F("[XTouch][TOUCH] Touch Setup"));
-        TS_Point p;
+        bool touched;
+
+        uint8_t gesture;
         int16_t x1, y1, x2, y2;
+        uint16_t touchX, touchY;
+        TS_Point p;
 
         lv_label_set_text(introScreenCaption, "用触控笔点击  " LV_SYMBOL_PLUS "  来校准触摸");
         lv_timer_handler();
@@ -118,22 +121,22 @@ void xtouch_touch_setup()
         // wait for no touch
         while (x_touch_touchScreen.touched())
             ;
-        tft.drawFastHLine(0, 10, 20, ILI9341_WHITE);
-        tft.drawFastVLine(10, 0, 20, ILI9341_WHITE);
+        tft.drawFastHLine(0, 10, 20, TFT_WHITE);
+        tft.drawFastVLine(10, 0, 20, TFT_WHITE);
         while (!x_touch_touchScreen.touched())
             ;
         delay(50);
         p = x_touch_touchScreen.getPoint();
         x1 = p.x;
         y1 = p.y;
-        tft.drawFastHLine(0, 10, 20, ILI9341_BLACK);
-        tft.drawFastVLine(10, 0, 20, ILI9341_BLACK);
+        tft.drawFastHLine(0, 10, 20, TFT_BLACK);
+        tft.drawFastVLine(10, 0, 20, TFT_BLACK);
         delay(500);
 
         while (x_touch_touchScreen.touched())
             ;
-        tft.drawFastHLine(300, 230, 20, ILI9341_WHITE);
-        tft.drawFastVLine(310, 220, 20, ILI9341_WHITE);
+        tft.drawFastHLine(300, 230, 20, TFT_WHITE);
+        tft.drawFastVLine(310, 220, 20, TFT_WHITE);
 
         while (!x_touch_touchScreen.touched())
             ;
@@ -141,8 +144,8 @@ void xtouch_touch_setup()
         p = x_touch_touchScreen.getPoint();
         x2 = p.x;
         y2 = p.y;
-        tft.drawFastHLine(300, 230, 20, ILI9341_BLACK);
-        tft.drawFastVLine(310, 220, 20, ILI9341_BLACK);
+        tft.drawFastHLine(300, 230, 20, TFT_BLACK);
+        tft.drawFastVLine(310, 220, 20, TFT_BLACK);
 
         int16_t xDist = 320 - 40;
         int16_t yDist = 240 - 40;
@@ -157,6 +160,7 @@ void xtouch_touch_setup()
 
         loadScreen(-1);
     }
+    #endif
 }
 
 #endif

@@ -1,14 +1,15 @@
 #ifndef _XLCD_SCREEN
 #define _XLCD_SCREEN
 
-#include <TFT_eSPI.h>
+#define LGFX_USE_V1      // set to use new version of library
+#include <LovyanGFX.hpp> // main library
 
 #define SD_SCK 18
 #define SD_MISO 19
 #define SD_MOSI 23
 #define SD_CS 5
 
-#define LCD_BACK_LIGHT_PIN 21
+#define LCD_BACK_LIGHT_PIN 0
 
 // use first channel of 16 channels (started from zero)
 #define LEDC_CHANNEL_0 0
@@ -21,11 +22,78 @@
 
 static const uint16_t screenWidth = 240;
 static const uint16_t screenHeight = 320;
+#define TFT_WIDTH 240
+#define TFT_HEIGHT 320
 
+
+
+// static lv_disp_draw_buf_t draw_buf;
+// static lv_color_t *buf1;
+// static lv_color_t *buf2;
 static lv_disp_draw_buf_t draw_buf;
-static lv_color_t buf[4096];
+static lv_color_t buf[2][ screenWidth * 10 ];
+// static lv_color_t buf[4096];
 
-TFT_eSPI tft = TFT_eSPI(screenWidth, screenHeight); /* TFT instance */
+
+class LGFX : public lgfx::LGFX_Device
+{
+
+    lgfx::Panel_ST7789 _panel_instance; // ST7789UI
+    lgfx::Bus_Parallel8 _bus_instance;  // MCU8080 8B
+
+public:
+    LGFX(void)
+    {
+        {
+            auto cfg = _bus_instance.config();
+            cfg.freq_write = 25000000;
+            cfg.pin_wr = 4;
+            cfg.pin_rd = 2;
+            cfg.pin_rs = 16;
+
+            cfg.pin_d0 = 15;
+            cfg.pin_d1 = 13;
+            cfg.pin_d2 = 12;
+            cfg.pin_d3 = 14;
+            cfg.pin_d4 = 27;
+            cfg.pin_d5 = 25;
+            cfg.pin_d6 = 33;
+            cfg.pin_d7 = 32;
+
+            _bus_instance.config(cfg);
+            _panel_instance.setBus(&_bus_instance);
+        }
+
+        {
+            auto cfg = _panel_instance.config();
+
+            cfg.pin_cs = 17;
+            cfg.pin_rst = -1;
+            cfg.pin_busy = -1;
+
+            cfg.panel_width = 240;
+            cfg.panel_height = 320;
+            cfg.offset_x = 0;
+            cfg.offset_y = 0;
+            cfg.offset_rotation = 0;
+            // cfg.dummy_read_pixel = 8;
+            // cfg.dummy_read_bits = 1;
+            cfg.readable = false;
+            cfg.invert = false;
+            cfg.rgb_order = false;
+            cfg.dlen_16bit = false;
+            cfg.bus_shared = true;
+
+            _panel_instance.config(cfg);
+        }
+
+        setPanel(&_panel_instance);
+    }
+};
+
+static LGFX tft; // declare display variable
+
+
 
 #include "ui/ui.h"
 #include "touch.h"
@@ -64,7 +132,7 @@ void xtouch_screen_wakeUp()
     loadScreen(0);
     xtouch_screen_setBrightness(xTouchConfig.xTouchBacklightLevel);
 }
-
+ 
 void xtouch_screen_onScreenOff(lv_timer_t *timer)
 {
     // if (bambuStatus.print_status == XTOUCH_PRINT_STATUS_RUNNING)
@@ -125,26 +193,26 @@ void xtouch_screen_toggleTFTFlip()
 void xtouch_screen_setupTFTFlip()
 {
     byte eepromTFTFlip = xtouch_screen_getTFTFlip();
-    tft.setRotation(eepromTFTFlip == 1 ? 3 : 1);
-    x_touch_touchScreen.setRotation(eepromTFTFlip == 1 ? 3 : 1);
+    tft.setRotation(eepromTFTFlip == 3 ? 1 : 3);
+    x_touch_touchScreen.setRotation(eepromTFTFlip == 3 ? 1 : 3);
 }
 
 void xtouch_screen_dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
 {
-    uint32_t w = (area->x2 - area->x1 + 1);
-    uint32_t h = (area->y2 - area->y1 + 1);
-
-    tft.startWrite();
-    tft.setAddrWindow(area->x1, area->y1, w, h);
-    tft.pushColors((uint16_t *)&color_p->full, w * h, true);
-    tft.endWrite();
-
-    lv_disp_flush_ready(disp);
+    if (tft.getStartCount() == 0)
+    {   // Processing if not yet started
+        tft.startWrite();
+    }
+    tft.pushImageDMA( area->x1
+                    , area->y1
+                    , area->x2 - area->x1 + 1
+                    , area->y2 - area->y1 + 1
+                    , ( lgfx::swap565_t* )&color_p->full);
+    lv_disp_flush_ready( disp );
 }
 
 void xtouch_screen_touchRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
 {
-
     if (x_touch_touchScreen.tirqTouched() && x_touch_touchScreen.touched())
     {
         lv_timer_reset(xtouch_screen_onScreenOffTimer);
@@ -157,12 +225,19 @@ void xtouch_screen_touchRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data
             return;
         }
 
+        #if not defined(SKIP_TP_CAL)
         ScreenPoint sp = ScreenPoint();
         TS_Point p = x_touch_touchScreen.getPoint();
         sp = getScreenCoords(p.x, p.y);
         data->state = LV_INDEV_STATE_PR;
         data->point.x = sp.x;
         data->point.y = sp.y;
+        #else
+        TS_Point p = x_touch_touchScreen.getPoint();
+        data->state = LV_INDEV_STATE_PR;
+        data->point.x = p.x;
+        data->point.y = p.y;
+        #endif
     }
     else
     {
@@ -173,32 +248,40 @@ void xtouch_screen_touchRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data
 void xtouch_screen_setup()
 {
 
+    tft.begin();
     ConsoleInfo.println("[XTouch][SCREEN] Setup");
-    pinMode(XPT2046_CS, OUTPUT);
-    pinMode(TFT_CS, OUTPUT);
-    pinMode(SD_CS, OUTPUT);
-
-    digitalWrite(XPT2046_CS, HIGH); // Touch controller chip select (if used)
-    digitalWrite(TFT_CS, HIGH);     // TFT screen chip select
-    digitalWrite(SD_CS, HIGH);      // SD card chips select, must use GPIO 5 (ESP32 SS)
-
-    xtouch_screen_setBackLedOff();
-
     lv_init();
 
-    tft.init();
+    // pinMode(XPT2046_CS, OUTPUT);
+    // pinMode(TFT_CS, OUTPUT);
+    pinMode(SD_CS, OUTPUT);
+
+    // digitalWrite(XPT2046_CS, HIGH); // Touch controller chip select (if used)
+    // digitalWrite(TFT_CS, HIGH);     // TFT screen chip select
+    digitalWrite(SD_CS, HIGH);      // SD card chips select, must use GPIO 5 (ESP32 SS)
+
+    // xtouch_screen_setBackLedOff();
+    pinMode(0, OUTPUT);
+    digitalWrite(0, HIGH);
+    
+    tft.fillScreen(TFT_BLACK);
+    x_touch_touchScreen.begin();
+    ConsoleInfo.println("TouchScreen Setup Done");
 
     ledcSetup(LEDC_CHANNEL_0, LEDC_BASE_FREQ, LEDC_TIMER_12_BIT);
     ledcAttachPin(LCD_BACK_LIGHT_PIN, LEDC_CHANNEL_0);
-
-    x_touch_spi.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-    x_touch_touchScreen.begin(x_touch_spi);
-
+    
     xtouch_screen_setupTFTFlip();
-
     xtouch_screen_setBrightness(255);
 
-    lv_disp_draw_buf_init(&draw_buf, buf, NULL, 4096);
+
+    // // xtouch_screen_setBrightness(255);
+    // lv_color_t *buf1 = (lv_color_t *)heap_caps_malloc(TFT_HEIGHT * 150 * sizeof(lv_color_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+    // lv_color_t *buf2 = (lv_color_t *)heap_caps_malloc(TFT_HEIGHT * 150 * sizeof(lv_color_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+    lv_disp_draw_buf_init( &draw_buf, buf[0], buf[1], screenWidth * 10 );
+    // lv_disp_draw_buf_init(&draw_buf, buf1, buf2, TFT_HEIGHT * 150);
+    // lv_disp_draw_buf_init(&draw_buf, buf1, NULL, TFT_HEIGHT * 150);
+
 
     /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
@@ -208,6 +291,7 @@ void xtouch_screen_setup()
     disp_drv.flush_cb = xtouch_screen_dispFlush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
+
 
     /*Initialize the (dummy) input device driver*/
     static lv_indev_drv_t indev_drv;
