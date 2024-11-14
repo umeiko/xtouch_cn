@@ -96,46 +96,53 @@ private:
 
   String _getUserFromAuthToken()
   {
-    // User name is in the 2nd portion of the auth token (delimited with periods)
-    int firstDot = _auth_token.indexOf('.');
-    int secondDot = _auth_token.indexOf('.', firstDot + 1);
-    String b64_string = _auth_token.substring(firstDot + 1, secondDot);
+    if (_region == "China"){
+      DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_config);
+      String user_id = "u_" + _decodeString(wifiConfig["user-id"].as<String>());
+      Serial.printf("User ID: %s\n", user_id.c_str());
+      return user_id;
+    }else{
+      // User name is in the 2nd portion of the auth token (delimited with periods)
+      int firstDot = _auth_token.indexOf('.');
+      int secondDot = _auth_token.indexOf('.', firstDot + 1);
+      String b64_string = _auth_token.substring(firstDot + 1, secondDot);
 
-    // String must be multiples of 4 chars in length. For decode pad with = character
-    while (b64_string.length() % 4 != 0)
-    {
-      b64_string += "=";
-    }
-
-    const unsigned char *input = (const unsigned char *)b64_string.c_str();
-    size_t inputLength = strlen((const char *)input);
-
-    // Calculate the exact maximum length for the output buffer
-    size_t maxOutputLength = (inputLength * 3) / 4;
-    unsigned char output[maxOutputLength + 1]; // +1 for the null terminator
-    size_t outlen;
-
-    int ret = mbedtls_base64_decode(output, maxOutputLength, &outlen, input, inputLength);
-
-    if (ret == 0)
-    {
-      output[outlen] = '\0'; // Null-terminate the output
-
-      DynamicJsonDocument doc(1024);
-      DeserializationError error = deserializeJson(doc, (const char *)output);
-
-      if (error)
+      // String must be multiples of 4 chars in length. For decode pad with = character
+      while (b64_string.length() % 4 != 0)
       {
-        Serial.print(F("deserializeJson() failed: "));
-        Serial.println(error.f_str());
-        return "";
+        b64_string += "=";
       }
 
-      return doc["username"].as<String>();
-    }
+      const unsigned char *input = (const unsigned char *)b64_string.c_str();
+      size_t inputLength = strlen((const char *)input);
 
-    Serial.println("Failed to decode base64");
-    return "";
+      // Calculate the exact maximum length for the output buffer
+      size_t maxOutputLength = (inputLength * 3) / 4;
+      unsigned char output[maxOutputLength + 1]; // +1 for the null terminator
+      size_t outlen;
+
+      int ret = mbedtls_base64_decode(output, maxOutputLength, &outlen, input, inputLength);
+
+      if (ret == 0)
+      {
+        output[outlen] = '\0'; // Null-terminate the output
+
+        DynamicJsonDocument doc(1024);
+        DeserializationError error = deserializeJson(doc, (const char *)output);
+
+        if (error)
+        {
+          Serial.print(F("deserializeJson() failed: "));
+          Serial.println(error.f_str());
+          return "";
+        }
+
+        return doc["username"].as<String>();
+      }
+
+      Serial.println("Failed to decode base64");
+      return "";
+    }
   }
 
 public:
@@ -209,7 +216,7 @@ public:
     if (!wifiConfig.containsKey("cloud-region") || !wifiConfig.containsKey("cloud-email") || !wifiConfig.containsKey("cloud-password"))
     {
 
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 无效的Bambu Cloud凭据");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 拓竹用户名或密码错误");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -628,14 +635,14 @@ public:
   void loadAuthTokens()
   {
     ConsoleLog.println(ESP.getFreeHeap());
-    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_tokens, false, 2048);
-    _auth_token = doc["authToken"].as<String>();
-    _username = _getUserFromAuthToken();
-
     DynamicJsonDocument wifiConfig = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_config);
     _region = wifiConfig["cloud-region"].as<const char *>();
     _email = _decodeString(wifiConfig["cloud-email"].as<String>());
     _password = _decodeString(wifiConfig["cloud-password"].as<String>());
+
+    DynamicJsonDocument doc = xtouch_filesystem_readJson(XTOUCH_FS, xtouch_paths_tokens, false, 2048);
+    _auth_token = doc["authToken"].as<String>();
+    _username = _getUserFromAuthToken();
     loggedIn = true;
   }
 
