@@ -798,8 +798,9 @@ void xtouch_mqtt_connect()
             case 4: // MQTT BAD_CREDENTIALS
             case 5: // MQTT UNAUTHORIZED
                 if (!xtouch_mqtt_firstConnectionDone)
-                {
-                    lv_label_set_text(introScreenCaption, LV_SYMBOL_WARNING " MQTT 错误");
+                {   
+                    String errormsg = LV_SYMBOL_WARNING " MQTT 错误\n 用户名 " + cloud.getUsername() + " 可能有误";
+                    lv_label_set_text(introScreenCaption, errormsg.c_str());
                     lv_timer_handler();
                     lv_task_handler();
                     delay(3000);
