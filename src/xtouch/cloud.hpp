@@ -216,7 +216,7 @@ public:
     if (!wifiConfig.containsKey("cloud-region") || !wifiConfig.containsKey("cloud-email") || !wifiConfig.containsKey("cloud-password"))
     {
 
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 拓竹用户名或密码错误");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 配置文件格式错误, 请重新刷入");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
@@ -228,6 +228,15 @@ public:
     _region = wifiConfig["cloud-region"].as<const char *>();
     _email = _decodeString(wifiConfig["cloud-email"].as<String>());
     _password = _decodeString(wifiConfig["cloud-password"].as<String>());
+
+    if( _region=="China" && !wifiConfig.containsKey("user-id")){
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 配置文件缺少User-ID, 请重新刷入");
+      lv_timer_handler();
+      lv_task_handler();
+      delay(3000);
+      ESP.restart();
+      return false;
+    }
 
     lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 正在获取 JWT Token");
     lv_timer_handler();
