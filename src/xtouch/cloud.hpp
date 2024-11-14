@@ -258,7 +258,7 @@ public:
 
     if (_auth_token == "")
     {
-      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 无效的Bambu Cloud凭据");
+      lv_label_set_text(introScreenCaption, LV_SYMBOL_CHARGE " 拓竹用户名或密码错误");
       lv_timer_handler();
       lv_task_handler();
       delay(3000);
