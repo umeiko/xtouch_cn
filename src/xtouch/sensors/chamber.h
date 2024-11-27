@@ -50,10 +50,10 @@ void xtouch_chamber_timer_stop()
 
 void xtouch_chamber_timer_init()
 {
-    if (!xtouch_bblp_is_p1Series())
-    {
-        return;
-    }
+    // if (!xtouch_bblp_is_p1Series())
+    // {
+    //     return;
+    // }
 
     if (xTouchConfig.xTouchChamberSensorEnabled)
     {

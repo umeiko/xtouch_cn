@@ -642,7 +642,7 @@ lv_obj_t *ui_settingsComponent_create(lv_obj_t *comp_parent)
     cui_reseDeviceButton = lv_label_create(cui_settingsComponent);
     lv_obj_set_width(cui_reseDeviceButton, lv_pct(100));
     lv_obj_set_height(cui_reseDeviceButton, LV_SIZE_CONTENT); /// 1
-    lv_label_set_text(cui_reseDeviceButton, LV_SYMBOL_POWER " 重启打印机");
+    lv_label_set_text(cui_reseDeviceButton, LV_SYMBOL_POWER " 重启Xtouch");
     lv_obj_add_flag(cui_reseDeviceButton, LV_OBJ_FLAG_CLICKABLE);    /// Flags
     lv_obj_clear_flag(cui_reseDeviceButton, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_obj_set_scrollbar_mode(cui_reseDeviceButton, LV_SCROLLBAR_MODE_OFF);
