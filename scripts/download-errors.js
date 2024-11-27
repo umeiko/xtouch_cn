@@ -1,7 +1,7 @@
 const fs = require('fs');
 const https = require('https');
 
-const url = 'https://e.bambulab.com/query.php?lang=en';
+const url = 'https://e.bambulab.com/query.php?lang=zh-cn';
 const hmsDataFileC = 'src/xtouch/bbl/bbl-errors.c';
 const hmsDataFileH = 'src/xtouch/bbl/bbl-errors.h';
 
@@ -66,8 +66,8 @@ https.get(url, (response) => {
 
             // data = data.replace(/ /g);
             const dataObject = JSON.parse(data);
-            const device_hms = dataObject.data.device_hms.en;
-            const device_error = dataObject.data.device_error.en;
+            const device_hms = dataObject.data.device_hms['zh-cn'];
+            const device_error = dataObject.data.device_error['zh-cn'];
 
             const outputC = [
                 `
