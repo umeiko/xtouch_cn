@@ -108,3 +108,5 @@ echo %jsonContent%
 
 :: 完成提示
 echo config.json文件已创建。
+pause
+endlocal
