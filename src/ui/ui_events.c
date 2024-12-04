@@ -30,7 +30,7 @@ void onHomeControllerPlayPause(lv_event_t *e)
         break;
     case XTOUCH_PRINT_STATUS_RUNNING:
     case XTOUCH_PRINT_STATUS_PREPARE:
-        ui_confirmPanel_show(LV_SYMBOL_WARNING " 取消?", onHomeControllerPlayPauseConfirm);
+        ui_confirmPanel_show(LV_SYMBOL_WARNING " 暂停打印?", onHomeControllerPlayPauseConfirm);
         break;
     }
 
@@ -40,7 +40,7 @@ void onHomeControllerPlayPause(lv_event_t *e)
 void onHomeControllerStopConfirm() { lv_msg_send(XTOUCH_COMMAND_STOP, NULL); }
 void onHomeControllerStop(lv_event_t *e)
 {
-    ui_confirmPanel_show(LV_SYMBOL_WARNING " 取消?", onHomeControllerStopConfirm);
+    ui_confirmPanel_show(LV_SYMBOL_WARNING " 取消打印?", onHomeControllerStopConfirm);
 }
 void onHomeSpeedSelection(lv_event_t *e) {}
 void onHomeLight(lv_event_t *e) { lv_msg_send(XTOUCH_COMMAND_LIGHT_TOGGLE, NULL); }
